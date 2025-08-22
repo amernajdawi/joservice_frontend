@@ -203,9 +203,9 @@ The app is configured to use the production backend by default. See [BACKEND_CON
 Create a `.env` file in the root directory:
 ```env
 # Backend Configuration
-PRODUCTION_BASE_URL=https://your-backend.com
-API_BASE_URL=https://your-backend.com/api
-WS_BASE_URL=wss://your-backend.com
+PRODUCTION_BASE_URL=https://joservicebackend-production.up.railway.app
+API_BASE_URL=https://joservicebackend-production.up.railway.app/api
+WS_BASE_URL=wss://joservicebackend-production.up.railway.app
 
 # Google Maps API Key
 GOOGLE_MAPS_API_KEY=your_google_maps_api_key
@@ -221,9 +221,9 @@ Update `lib/constants/api_config.dart` to modify backend endpoints:
 
 ```dart
 class ApiConfig {
-  static const String productionBaseUrl = 'https://your-backend.com';
+  static const String productionBaseUrl = 'https://joservicebackend-production.up.railway.app';
   static const String apiBaseUrl = '$productionBaseUrl/api';
-  static const String wsBaseUrl = 'wss://your-backend.com';
+  static const String wsBaseUrl = 'wss://joservicebackend-production.up.railway.app';
 }
 ```
 

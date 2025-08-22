@@ -28,11 +28,11 @@ Edit `lib/constants/api_config.dart`:
 ```dart
 class ApiConfig {
   // Change this line to your new backend URL
-  static const String productionBaseUrl = 'https://your-new-backend.com';
+  static const String productionBaseUrl = 'https://joservicebackend-production.up.railway.app';
   
   // Other URLs will update automatically
   static const String apiBaseUrl = '$productionBaseUrl/api';
-  static const String wsBaseUrl = 'wss://your-new-backend.com';
+  static const String wsBaseUrl = 'wss://joservicebackend-production.up.railway.app';
 }
 ```
 
