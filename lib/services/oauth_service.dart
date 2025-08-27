@@ -12,6 +12,7 @@ class OAuthService {
       // Initialize Google Sign In
       final GoogleSignIn googleSignIn = GoogleSignIn(
         scopes: ['email', 'profile'],
+        clientId: null, // Will use default from google-services.json
       );
 
       // Trigger the sign-in flow

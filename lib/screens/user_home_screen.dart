@@ -12,7 +12,10 @@ import 'user_chats_screen.dart';
 import '../services/api_service.dart';
 import '../services/auth_service.dart';
 import '../services/booking_service.dart';
+import '../services/notification_service.dart';
 import 'package:provider/provider.dart' as provider; // Import provider package
+import 'notification_center_screen.dart';
+
 
 class UserHomeScreen extends StatefulWidget {
   static const routeName = '/user-home';
@@ -301,6 +304,54 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                     ),
                   );
                 },
+              ),
+            ),
+            const SizedBox(width: 8),
+            Container(
+              margin: const EdgeInsets.only(right: 8),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.15),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Stack(
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.notifications_rounded),
+                    color: Colors.white,
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const NotificationCenterScreen(),
+                        ),
+                      );
+                    },
+                  ),
+                  Positioned(
+                    right: 8,
+                    top: 8,
+                    child: Container(
+                      padding: const EdgeInsets.all(2),
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      constraints: const BoxConstraints(
+                        minWidth: 12,
+                        minHeight: 12,
+                      ),
+                      child: Text(
+                        '3', // This would be dynamic based on unread notifications
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 8,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
             const SizedBox(width: 8),
@@ -711,6 +762,8 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
       ),
     );
   }
+
+
 
   Widget _buildStatsCard(bool isDark) {
     return Container(

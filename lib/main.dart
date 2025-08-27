@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 import './l10n/app_localizations.dart';
 import 'package:jo_service_app/screens/provider_detail_screen.dart'; // Added import
 import 'package:jo_service_app/services/auth_service.dart'; // Added import
@@ -7,7 +9,8 @@ import 'package:jo_service_app/services/theme_service.dart'; // Import ThemeServ
 import 'package:jo_service_app/services/locale_service.dart'; // Import LocaleService
 import 'package:jo_service_app/services/background_service.dart'; // Import BackgroundService
 import 'package:jo_service_app/services/app_lifecycle_manager.dart'; // Import AppLifecycleManager
-import 'package:jo_service_app/services/push_notification_service.dart'; // Import LocalNotificationService
+import 'package:jo_service_app/services/notification_service.dart'; // Import NotificationService
+import 'package:jo_service_app/widgets/popup_notification.dart'; // Import PopupNotification
 import 'package:provider/provider.dart'; // Added import
 // import 'screens/splash_screen.dart'; // New initial screen // Commented out as SplashScreen is deleted
 import './screens/auth_check_screen.dart'; // Import AuthCheckScreen
@@ -26,11 +29,22 @@ import './screens/admin_login_screen.dart'; // Import AdminLoginScreen
 import './screens/admin_dashboard_screen.dart'; // Import AdminDashboardScreen
 import './screens/admin_create_provider_screen.dart'; // Import AdminCreateProviderScreen
 import './screens/admin_booking_management_screen.dart'; // Import AdminBookingManagementScreen
+import './screens/notification_center_screen.dart'; // Import NotificationCenterScreen
 
 // import './screens/create_booking_screen.dart'; // Import CreateBookingScreen
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
+  // Initialize Firebase
+  try {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+    print('✅ Firebase initialized successfully');
+  } catch (e) {
+    print('❌ Failed to initialize Firebase: $e');
+  }
   
   // Initialize background service with error handling
   try {
@@ -39,12 +53,13 @@ void main() async {
     // Continue without background service if initialization fails
   }
   
-  // Initialize local notifications
+  // Initialize comprehensive notification service
   try {
-    await LocalNotificationService().initialize();
+    await NotificationService().initialize();
+    print('✅ Notification service initialized successfully');
   } catch (e) {
     // Continue without notifications if initialization fails
-    print('Failed to initialize local notifications: $e');
+    print('❌ Failed to initialize notification service: $e');
   }
   
   runApp(const MyApp());
@@ -82,6 +97,7 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(create: (context) => AuthService()),
         ChangeNotifierProvider(create: (context) => ThemeService()),
         ChangeNotifierProvider(create: (context) => LocaleService()),
+        Provider<NotificationService>(create: (context) => NotificationService()),
       ],
       child: Consumer2<ThemeService, LocaleService>(
         builder: (context, themeService, localeService, child) {
@@ -95,6 +111,7 @@ class _MyAppState extends State<MyApp> {
           }
           
           return MaterialApp(
+            navigatorKey: navigatorKey, // Add global navigator key for popup notifications
             title: 'JO Service',
             theme: themeService.currentTheme,
             
@@ -229,6 +246,10 @@ class _MyAppState extends State<MyApp> {
                     ),
                   );
                 }
+              case '/notification-center':
+                return MaterialPageRoute(
+                  builder: (_) => const NotificationCenterScreen(),
+                );
               // Default or unknown route - redirect to user login
               default:
                 // Instead of showing 404, redirect to user login screen

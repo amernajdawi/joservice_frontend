@@ -11,6 +11,7 @@ import '../services/api_service.dart';
 import '../services/auth_service.dart';
 import '../services/booking_service.dart';
 import '../services/conversation_service.dart';
+import '../services/notification_service.dart';
 import '../models/booking_model.dart';
 import '../models/chat_conversation.dart';
 import '../widgets/full_screen_image_viewer.dart';
@@ -236,6 +237,11 @@ class _ChatScreenState extends State<ChatScreen>
               _messages.add(newMessage);
               _messages.sort(
                   (a, b) => a.timestamp.compareTo(b.timestamp)); // Ensure order
+              
+              // Show notification for new message if app is in background
+              if (newMessage.senderId != currentUserId) {
+                _showNewMessageNotification(newMessage);
+              }
             } else {
             }
           } else {
@@ -337,6 +343,27 @@ class _ChatScreenState extends State<ChatScreen>
     });
   }
 
+  // Show notification for new messages
+  void _showNewMessageNotification(ChatMessage message) {
+    try {
+      final notificationService = NotificationService();
+      if (notificationService.isInitialized) {
+        notificationService.showChatNotification(
+          title: 'New Message from ${widget.conversation.participantName}',
+          body: message.text,
+          chatId: widget.conversation.id ?? '',
+          senderId: message.senderId,
+          additionalData: {
+            'conversationId': widget.conversation.id,
+            'participantId': widget.conversation.participantId,
+          },
+        );
+      }
+    } catch (error) {
+      print('Error showing notification: $error');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -417,38 +444,14 @@ class _ChatScreenState extends State<ChatScreen>
                   ),
                   overflow: TextOverflow.ellipsis,
                 ),
-                Text(
-                  'Online', // You can implement real online status later
-                  style: TextStyle(
-                    color: _textGray,
-                    fontSize: 13,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
+                // Online status removed
               ],
             ),
           ),
         ],
       ),
       actions: [
-        IconButton(
-          icon: const Icon(Icons.videocam_rounded, color: Color(0xFF007AFF)),
-          onPressed: () {
-            // Future: Video call functionality
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Video call feature coming soon!')),
-            );
-          },
-        ),
-        IconButton(
-          icon: const Icon(Icons.phone, color: Color(0xFF007AFF)),
-          onPressed: () {
-            // Future: Voice call functionality
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Voice call feature coming soon!')),
-            );
-          },
-        ),
+        // Call and video call icons removed
       ],
     );
   }

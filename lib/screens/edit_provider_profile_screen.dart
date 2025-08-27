@@ -331,6 +331,20 @@ class _EditProviderProfileScreenState extends State<EditProviderProfileScreen>
         return;
       }
 
+      // If we have a selected image, upload it first
+      if (_selectedImage != null) {
+        print('🖼️ Uploading profile picture before saving profile...');
+        try {
+          await _uploadProfilePicture();
+          // Wait a bit for the upload to complete
+          await Future.delayed(const Duration(milliseconds: 500));
+          print('🖼️ Profile picture uploaded successfully');
+        } catch (e) {
+          print('⚠️ Warning: Failed to upload profile picture: $e');
+          // Don't fail the entire save if image upload fails
+        }
+      }
+
       final updatedData = {
         'fullName': _businessNameController.text.trim(),
         'businessName': _businessNameController.text.trim(), // Backend expects 'businessName' not 'companyName'
@@ -343,6 +357,12 @@ class _EditProviderProfileScreenState extends State<EditProviderProfileScreen>
           'coordinates': _latitude != null && _longitude != null ? [_longitude!, _latitude!] : null,
         },
       };
+
+      // Add profile picture URL if we have one
+      if (_currentProfilePictureUrl != null && _currentProfilePictureUrl!.isNotEmpty) {
+        updatedData['profilePictureUrl'] = _currentProfilePictureUrl!;
+        print('🖼️ Including profile picture URL in profile update: $_currentProfilePictureUrl');
+      }
 
       // Log the location data being sent
       final locationData = updatedData['location'] as Map<String, dynamic>?;
@@ -383,6 +403,7 @@ class _EditProviderProfileScreenState extends State<EditProviderProfileScreen>
         _phoneController.text = _phoneController.text; // Keep current form value
         _addressController.text = _addressController.text; // Keep current form value
         _currentProfilePictureUrl = updatedProvider.profilePictureUrl;
+        _selectedImage = null; // Clear selected image after successful save
         _isSaving = false;
       });
 

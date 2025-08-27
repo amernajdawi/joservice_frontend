@@ -480,6 +480,39 @@ class _ProviderDashboardScreenState extends State<ProviderDashboardScreen>
                                   },
                                 ),
                               ),
+                            // Notification Icon
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.pushNamed(context, '/notification-center');
+                              },
+                              child: Container(
+                                margin: const EdgeInsets.only(right: 16),
+                                child: Stack(
+                                  children: [
+                                    Icon(
+                                      Icons.notifications_outlined,
+                                      color: isDark ? Colors.white : const Color(0xFF1D1D1F),
+                                      size: 24,
+                                    ),
+                                    // Notification badge
+                                    Positioned(
+                                      right: 0,
+                                      top: 0,
+                                      child: Container(
+                                        width: 8,
+                                        height: 8,
+                                        decoration: BoxDecoration(
+                                          color: const Color(0xFFFF3B30),
+                                          borderRadius: BorderRadius.circular(4),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            
+                            // Refresh Button
                             GestureDetector(
                               onTap: _refreshData,
                               onLongPress: () {

@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import '../models/booking_model.dart';
 import './api_service.dart';
 import './auth_service.dart';
+import './notification_service.dart';
 
 class BookingService {
   final String _baseUrl = '${ApiService.getBaseUrl()}/bookings';
@@ -47,7 +48,12 @@ class BookingService {
 
 
       if (response.statusCode == 201) {
-        return Booking.fromJson(jsonDecode(response.body));
+        final booking = Booking.fromJson(jsonDecode(response.body));
+        
+        // Show notification for successful booking creation
+        _showBookingCreatedNotification(booking);
+        
+        return booking;
       } else {
         throw Exception('Failed to create booking: ${response.body}');
       }
@@ -536,5 +542,31 @@ class BookingService {
     } catch (e) {
       throw Exception('Error reassigning booking: $e');
     }
+  }
+
+  // Show notification when booking is created
+  void _showBookingCreatedNotification(Booking booking) {
+    try {
+      final notificationService = NotificationService();
+      if (notificationService.isInitialized) {
+        notificationService.showBookingNotification(
+          title: 'Booking Created Successfully!',
+          body: 'Your service has been booked for ${_formatDateTime(booking.serviceDateTime)}',
+          bookingId: booking.id ?? '',
+          additionalData: {
+            'providerId': booking.provider?.id,
+            'providerName': booking.provider?.fullName,
+            'serviceType': booking.provider?.serviceType,
+          },
+        );
+      }
+    } catch (error) {
+      print('Error showing booking notification: $error');
+    }
+  }
+
+  // Helper method to format date time
+  String _formatDateTime(DateTime dateTime) {
+    return '${dateTime.day}/${dateTime.month}/${dateTime.year} at ${dateTime.hour}:${dateTime.minute.toString().padLeft(2, '0')}';
   }
 }
