@@ -91,7 +91,6 @@ migrate_working_dir/
 .env.production
 google-services.json
 GoogleService-Info.plist
-firebase_options.dart
 
 # Version Management
 .fvm/
