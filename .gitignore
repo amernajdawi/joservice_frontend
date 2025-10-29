@@ -89,7 +89,6 @@ migrate_working_dir/
 .env.development
 .env.test
 .env.production
-google-services.json
 GoogleService-Info.plist
 
 # Version Management
