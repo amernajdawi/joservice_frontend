@@ -49,7 +49,7 @@ dependencies:
   flutter_map: ^6.1.0
   latlong2: ^0.9.0
   workmanager: ^0.5.2
-  flutter_local_notifications: ^15.1.3
+  flutter_local_notifications: ^17.0.2
   shared_preferences: ^2.2.2
   permission_handler: ^11.0.1
   # OAuth packages for social login
